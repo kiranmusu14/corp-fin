@@ -1,0 +1,5 @@
+# Cloudflare Pages configuration for Finance Academy.
+# Deploy with:  npm run build && npx wrangler pages deploy dist
+name = "corp-fin"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-07-23"
