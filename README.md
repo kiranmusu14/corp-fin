@@ -42,33 +42,39 @@ npm run build
 npm run preview
 ```
 
-## Deploy to Cloudflare Pages
+## Deploy to Cloudflare
 
-This is a static single-page app, so it deploys to Cloudflare Pages with zero server config.
+This is a static single-page app. It ships with a **Workers static-assets** config (`wrangler.toml`) so it deploys with `npx wrangler deploy` — no server code required.
 
 **Requirements:** Node.js **18+** (the `engines` field enforces this; Cloudflare's build image defaults are fine).
 
-### Option A — Cloudflare dashboard (Git integration)
+### Option A — Cloudflare dashboard (Git integration, Workers Build)
 
 1. Push this repo to GitHub (see below).
-2. In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**, and pick the `corp-fin` repo.
+2. In the Cloudflare dashboard: **Workers & Pages → Create → Import a repository**, and pick the `corp-fin` repo.
 3. Set the build settings:
-   - **Framework preset:** Vite (or "None")
    - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-4. Deploy. Client-side routing works because `public/_redirects` rewrites all paths to `index.html` (`/* /index.html 200`).
+   - **Deploy command:** `npx wrangler deploy`
+   - **Root directory:** `/`
+4. Deploy. Client-side routing works because `wrangler.toml` sets
+   `not_found_handling = "single-page-application"`, which serves `index.html`
+   (200) for any unmatched path like `/lesson/fin1`.
 
 ### Option B — Wrangler CLI
 
 ```bash
 npm install
 npm run build
-npx wrangler pages deploy dist --project-name=corp-fin
+npx wrangler deploy
 # or simply:
-npm run deploy
+npm run deploy   # runs the build, then wrangler deploy
 ```
 
-`wrangler.toml` sets `pages_build_output_dir = "dist"`. The first CLI deploy will prompt you to log in to Cloudflare (`npx wrangler login`) and create the Pages project if it doesn't exist.
+The first CLI deploy will prompt you to log in to Cloudflare (`npx wrangler login`).
+
+> The included `public/_redirects` (`/* /index.html 200`) provides the same SPA
+> fallback if you deploy on classic **Cloudflare Pages** instead — it's harmless
+> for the Workers assets deploy above.
 
 ## Tech stack
 

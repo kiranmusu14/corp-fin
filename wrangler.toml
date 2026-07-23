@@ -1,5 +1,17 @@
-# Cloudflare Pages configuration for Finance Academy.
-# Deploy with:  npm run build && npx wrangler pages deploy dist
+# Cloudflare deployment config for Finance Academy.
+#
+# This is a static-assets Worker (no server code) that serves the built
+# Vite SPA from ./dist. It works with the deploy command:
+#
+#     npx wrangler deploy
+#
+# `not_found_handling = "single-page-application"` makes client-side routes
+# (e.g. /lesson/fin1) return index.html with a 200, so deep links / refreshes
+# work without a _redirects file.
+
 name = "corp-fin"
-pages_build_output_dir = "dist"
 compatibility_date = "2026-07-23"
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
